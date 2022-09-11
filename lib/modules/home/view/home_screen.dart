@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeScreenController homeScreenController = Get.put(HomeScreenController());
+  List list = [].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -27,41 +28,77 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Obx(
         () => homeScreenController.isDataLoading.value
             ? homeScreenController.isLoading.value
-                ? Center(
+                ? const Center(
                     child: Text("Data will be delayed...."),
                   )
-                : Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: homeScreenController.homeDataModel!.results!.length,
-                itemBuilder: (contex, index) {
-                  return Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      ListTile(
-                        onTap: () {
-                          var testdata = homeScreenController
-                              .homeDataModel?.results?[index];
+                : const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      print(
+                          "test : ${homeScreenController.homeDataModel?.results?[0].name?.title}");
+                    },
+                    child: Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.blue,
+                      child: DropdownButton(
+                          hint: Text("Name"),
+                          onChanged: (newValue) {
+                            homeScreenController.setSelected(newValue!);
+                          },
+                          //value: homeScreenController.selected.value,
+                          icon: Icon(Icons.arrow_drop_down),
+                          items: homeScreenController.homeDataModel?.results
+                              ?.map((selectedType) {
+                            return DropdownMenuItem(
+                              child: Text(
+                                "${selectedType.name?.first!}",
+                              ),
+                              value: selectedType.name?.first!,
+                            );
+                          }).toList()),
+                    ),
+                  ),
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount:
+                          homeScreenController.homeDataModel!.results!.length,
+                      itemBuilder: (contex, index) {
+                        var test = homeScreenController
+                            .homeDataModel?.results?[index].name?.title;
+                        return Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            ListTile(
+                              onTap: () {
+                                var testdata = homeScreenController
+                                    .homeDataModel?.results?[index];
 
-                          Get.toNamed(RouteConstant.detailsScreen,
-                              arguments: testdata);
+                                Get.toNamed(RouteConstant.detailsScreen,
+                                    arguments: testdata);
 
-                          print(homeScreenController
-                              .homeDataModel?.results?[index].gender);
-                        },
-                        title: Text(
-                            "${homeScreenController.homeDataModel?.results?[index].name?.title} "
-                            "${homeScreenController.homeDataModel?.results?[index].name?.first}"),
-                        subtitle: Text(
-                            "Gender : ${homeScreenController.homeDataModel?.results?[index].gender}"),
-                        leading: CircleAvatar(
-                          radius: 25,
-                          backgroundImage: NetworkImage(
-                              "${homeScreenController.homeDataModel?.results?[index].picture?.large}"),
-                        ),
-                      )
-                    ],
-                  );
-                },
+                                print(homeScreenController
+                                    .homeDataModel?.results?[index].gender);
+                              },
+                              title: Text(
+                                  "${homeScreenController.homeDataModel?.results?[index].name?.title} "
+                                  "${homeScreenController.homeDataModel?.results?[index].name?.first}"),
+                              subtitle: Text(
+                                  "Gender : ${homeScreenController.homeDataModel?.results?[index].gender}"),
+                              leading: CircleAvatar(
+                                radius: 25,
+                                backgroundImage: NetworkImage(
+                                    "${homeScreenController.homeDataModel?.results?[index].picture?.large}"),
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
       ),
     );

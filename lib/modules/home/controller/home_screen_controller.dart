@@ -56,4 +56,10 @@ class HomeScreenController extends GetxController {
       t.cancel(); //stops the timer
     });
   }
+
+  final selected = "Name".obs;
+
+  void setSelected(String value) {
+    selected.value = value;
+  }
 }

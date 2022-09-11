@@ -1,5 +1,8 @@
+import 'package:flutter/src/material/dropdown.dart';
+
 class HomeDataModel {
   List<Results>? results;
+  List<Name>? nameList;
   Info? info;
 
   HomeDataModel({this.results, this.info});
@@ -126,6 +129,8 @@ class Name {
     data['last'] = this.last;
     return data;
   }
+
+  map(DropdownMenuItem<String> Function(dynamic selectedType) param0) {}
 }
 
 class Location {

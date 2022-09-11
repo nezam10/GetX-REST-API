@@ -39,14 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10),
                       ListTile(
                         onTap: () {
-                          //Get.toNamed(RouteConstant.detailsScreen);
-                          // print(homeScreenController
-                          //     .homeDataModel?.results?[index]
-                          //     .toJson());
-                          // final listData = homeScreenController
-                          //     .homeDataModel?.results?[index]
-                          //     .toJson();
-                          // print("list data : $listData");
+                          var testdata = homeScreenController
+                              .homeDataModel?.results?[index];
+
+                          Get.toNamed(RouteConstant.detailsScreen,
+                              arguments: testdata);
+
                           print(homeScreenController
                               .homeDataModel?.results?[index].gender);
                         },
@@ -55,6 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             "${homeScreenController.homeDataModel?.results?[index].name?.first}"),
                         subtitle: Text(
                             "Gender : ${homeScreenController.homeDataModel?.results?[index].gender}"),
+                        leading: CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(
+                              "${homeScreenController.homeDataModel?.results?[index].picture?.large}"),
+                        ),
                       )
                     ],
                   );

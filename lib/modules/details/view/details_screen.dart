@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getx_rest_api/modules/home/controller/home_screen_controller.dart';
+
+import '../../../model/home_data_model.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key});
+  DetailsScreen({super.key});
+
+  final homeScreenController = Get.find<HomeScreenController>();
+  Results argumentValue = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +19,22 @@ class DetailsScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.cyanAccent[200],
+            CircleAvatar(
+              radius: 100,
+              backgroundImage: NetworkImage("${argumentValue.picture?.large}"),
             ),
-            Text(
-              "Details Page",
-            )
+            SizedBox(height: 20),
+            Container(
+              alignment: Alignment.center,
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.blue[200],
+              child: Text("Name : ${argumentValue.name?.title}"
+                  " ${argumentValue.name?.first}"),
+            ),
           ],
         ),
       ),

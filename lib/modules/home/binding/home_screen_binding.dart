@@ -6,6 +6,7 @@ class HomeScreenBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<HomeScreenController>(
       () => HomeScreenController(),
+      fenix: true,
     );
   }
 }

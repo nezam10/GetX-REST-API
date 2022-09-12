@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_rest_api/model/home_data_model.dart';
+import 'package:getx_rest_api/modules/home/view/home_screen.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreenController extends GetxController {
@@ -18,6 +19,8 @@ class HomeScreenController extends GetxController {
     super.onInit();
     getApi();
     startTimer();
+    addItems();
+    generateList();
   }
 
   @override
@@ -34,7 +37,7 @@ class HomeScreenController extends GetxController {
     try {
       isDataLoading(true);
       http.Response response = await http.get(
-        Uri.tryParse("https://randomuser.me/api/?results=15")!,
+        Uri.tryParse("https://randomuser.me/api/?results=20")!,
       );
       print("status code : ${response.statusCode}");
       print("response body : ${response.body}");
@@ -66,6 +69,44 @@ class HomeScreenController extends GetxController {
     selected.value = value;
   }
 
-  /* ::::::::::::::::::::  :::::::::::::::::::::: */
+/* :::::::::::::::::::: Pagination :::::::::::::::::::::: */
+  RxList<Results> list = <Results>[].obs;
+  ScrollController controller = ScrollController();
+  RxInt listLength = 15.obs;
+  RxList results = [].obs;
 
+  addItems() async {
+    controller.addListener(() {
+      if (controller.position.maxScrollExtent == controller.position.pixels) {
+        for (RxInt i = 0.obs; i < 2; i++) {
+          listLength++;
+          list.add(Results(gender: (listLength).toString()));
+        }
+      }
+    });
+  }
+
+  generateList() {
+    list = RxList.generate(
+        listLength.toInt(), (index) => Results(gender: (index + 1).toString()));
+  }
+
+  /* :::::::::::::::::::: Pagination Filter :::::::::::::::::::::: */
+
+  // final _paginationFilter = PaginationFilter().obs;
+  // final _lastPage = false.obs;
+  // final _users = <HomeDataModel>[].obs;
+
+  // List<HomeDataModel> get users => _users.toList();
+  // int get limit => _paginationFilter.value.limit;
+  // int get _page => _paginationFilter.value.page;
+  // bool get lastPage => _lastPage.value;
+
+  // Future<void> _getAllUsers() async {
+  //   final userData = homeDataModel!.results!.length;
+  //   if (userData.isEmpty) {
+  //     _lastPage.value = true;
+  //   }
+  //   _users.addAll(userData);
+  // }
 }

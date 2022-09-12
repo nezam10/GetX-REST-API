@@ -6,6 +6,7 @@ import 'package:getx_rest_api/modules/details/view/details_screen.dart';
 import 'package:getx_rest_api/modules/home/binding/home_screen_binding.dart';
 import 'package:getx_rest_api/modules/home/controller/home_screen_controller.dart';
 import 'package:getx_rest_api/modules/home/view/home_screen.dart';
+import 'package:getx_rest_api/modules/login/view/login_screen.dart';
 
 List<GetPage> getPages = [
   GetPage(
@@ -16,6 +17,12 @@ List<GetPage> getPages = [
   GetPage(
     name: RouteConstant.detailsScreen,
     page: () => DetailsScreen(),
+    transition: Transition.fadeIn,
+    binding: DetailsScreenBinding(),
+  ),
+  GetPage(
+    name: RouteConstant.loginScreen,
+    page: () => LoginScreen(),
     transition: Transition.fadeIn,
     binding: DetailsScreenBinding(),
   ),

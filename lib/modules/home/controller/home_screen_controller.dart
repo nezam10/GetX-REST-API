@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_rest_api/model/home_data_model.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +28,7 @@ class HomeScreenController extends GetxController {
   @override
   void onClose() {}
 
+  /* :::::::::::::::::::: get api data :::::::::::::::::::::: */
   getApi() async {
     print("hello : ");
     try {
@@ -62,4 +65,7 @@ class HomeScreenController extends GetxController {
   void setSelected(String value) {
     selected.value = value;
   }
+
+  /* ::::::::::::::::::::  :::::::::::::::::::::: */
+
 }

@@ -46,7 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: DropdownButton(
                           hint: Text("Name"),
                           onChanged: (newValue) {
-                            homeScreenController.setSelected(newValue!);
+                            homeScreenController.selected.value =
+                                newValue.toString();
+                            if (homeScreenController.selected.value != "Name") {
+                              homeScreenController.setSelected(
+                                  homeScreenController.selected.value);
+                            }
                           },
                           //value: homeScreenController.selected.value,
                           icon: Icon(Icons.arrow_drop_down),
@@ -60,6 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           }).toList()),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Get.toNamed(RouteConstant.loginScreen),
+                    child: Text("Login Screen"),
                   ),
                   Flexible(
                     child: ListView.builder(

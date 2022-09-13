@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
       body: Obx(
-        () => homeScreenController.isDataLoading.value
+        () => homeScreenController.isDataProcession.value == true
             ? homeScreenController.isLoading.value
                 ? const Center(
                     child: Text("Data will be delayed...."),
@@ -73,11 +73,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Flexible(
                     child: ListView.builder(
+                      controller: homeScreenController.scrollController,
                       itemCount:
-                          homeScreenController.homeDataModel!.results!.length,
+                          homeScreenController.homeDataModel?.results?.length,
                       itemBuilder: (contex, index) {
-                        var test = homeScreenController
-                            .homeDataModel?.results?[index].name?.title;
+                        // var test = homeScreenController
+                        //     .homeDataModel?.results?[index].name?.title;
+                        late int length =
+                            homeScreenController.homeDataModel!.results!.length;
+                        if (index == length - 1 &&
+                            homeScreenController.isMoreDataAvailable.value ==
+                                true) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
                         return Column(
                           children: [
                             const SizedBox(height: 10),
@@ -93,15 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .homeDataModel?.results?[index].gender);
                               },
                               title: Text(
-                                  "${homeScreenController.homeDataModel?.results?[index].name?.title} "
-                                  "${homeScreenController.homeDataModel?.results?[index].name?.first}"),
-                              subtitle: Text(
-                                  "Gender : ${homeScreenController.homeDataModel?.results?[index].gender}"),
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage(
-                                    "${homeScreenController.homeDataModel?.results?[index].picture?.large}"),
-                              ),
+                                  "${homeScreenController.homeDataModel?.results?[index].name?.first} "),
+                              // subtitle: Text(
+                              //     "Gender : ${homeScreenController.homeDataModel?.results?[index].gender}"),
+                              // leading: CircleAvatar(
+                              //   radius: 25,
+                              //   backgroundImage: NetworkImage(
+                              //       "${homeScreenController.homeDataModel?.results?[index].picture?.large}"),
+                              // ),
                             )
                           ],
                         );

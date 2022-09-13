@@ -27,6 +27,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 CustomTextformField(
                   padding: const EdgeInsets.only(left: 10),
+                  controller: loginController.nameController,
                   textAlign: TextAlign.start,
                   color: Colors.grey.shade200,
                   keyboardType: TextInputType.text,

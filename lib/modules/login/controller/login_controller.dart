@@ -1,17 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_rest_api/constant/helper.dart';
 import 'package:getx_rest_api/constant/route_constant.dart';
+import 'package:getx_rest_api/model/post_data_model.dart';
+import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
+  late Future<PostDataModel> _futureModel;
   String userEmail = '';
   String userName = '';
   String userPassword = '';
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    //CreateData(nameController.text);
+    nameController = TextEditingController();
     super.onInit();
   }
 
@@ -25,6 +32,22 @@ class LoginController extends GetxController {
   void onClose() {
     //formKey.
     super.onClose();
+  }
+
+  /* :::::::::::::::::::::::: post api :::::::::::::::::::::::*/
+
+  var uri = 'https://reqres.in/api/users';
+  Future<PostDataModel> CreateData(String name) async {
+    final http.Response response = await http.post(Uri(userInfo: uri),
+        body: jsonEncode(<String, String>{
+          'name': name,
+        }));
+    if (response.statusCode == 201) {
+      await Future.delayed(Duration(seconds: 3));
+      return PostDataModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Failed!");
+    }
   }
 
   String? emailValidator(String value) {
@@ -71,6 +94,9 @@ class LoginController extends GetxController {
         } else if (userName.isNotEmpty &&
             userEmail.isNotEmpty &&
             userPassword.length > 7) {
+          print("create 1 : $_futureModel");
+          _futureModel = CreateData(nameController.text);
+          print("create 2 : $_futureModel");
           Get.offAndToNamed(RouteConstant.homeScreen);
         }
       }

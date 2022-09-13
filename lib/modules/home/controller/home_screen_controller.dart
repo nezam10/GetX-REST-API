@@ -5,22 +5,31 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_rest_api/constant/helper.dart';
 import 'package:getx_rest_api/model/home_data_model.dart';
-import 'package:getx_rest_api/modules/home/view/home_screen.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreenController extends GetxController {
   HomeDataModel? homeDataModel;
 
   var isDataLoading = true.obs;
+  //
+  //var lstTask = List<dynamic>.empty(growable: true).obs;
+  var page = 10.obs;
+  var isDataProcession = false.obs;
+  //for pagination
+  ScrollController scrollController = ScrollController();
+  var isMoreDataAvailable = true.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    getApi();
+    getTask(page);
+    paginateTask();
+    //getApi(counter.value);
     startTimer();
-    addItems();
-    generateList();
+    //addItems();
+    //generateList();
   }
 
   @override
@@ -32,18 +41,20 @@ class HomeScreenController extends GetxController {
   void onClose() {}
 
   /* :::::::::::::::::::: get api data :::::::::::::::::::::: */
-  getApi() async {
+  getApi(var page) async {
     print("hello : ");
     try {
       isDataLoading(true);
+      homeDataModel?.results?.clear();
       http.Response response = await http.get(
-        Uri.tryParse("https://randomuser.me/api/?results=20")!,
+        Uri.tryParse("https://randomuser.me/api/?results=$page")!,
       );
       print("status code : ${response.statusCode}");
       print("response body : ${response.body}");
       if (response.statusCode == 200) {
         var result = jsonDecode(response.body);
         homeDataModel = HomeDataModel.fromJson(result);
+        //lstTask = HomeDataModel.fromJson(result);
         print("result================ : $result");
         isDataLoading(false);
       } else {
@@ -69,27 +80,58 @@ class HomeScreenController extends GetxController {
     selected.value = value;
   }
 
-/* :::::::::::::::::::: Pagination :::::::::::::::::::::: */
-  RxList<Results> list = <Results>[].obs;
-  ScrollController controller = ScrollController();
-  RxInt listLength = 15.obs;
-  RxList results = [].obs;
+  /* :::::::::::::::::::: Fetch Data :::::::::::::::::::::: */
 
-  addItems() async {
-    controller.addListener(() {
-      if (controller.position.maxScrollExtent == controller.position.pixels) {
-        for (RxInt i = 0.obs; i < 2; i++) {
-          listLength++;
-          list.add(Results(gender: (listLength).toString()));
-        }
+  void getTask(var page) {
+    try {
+      isMoreDataAvailable(false);
+      isDataProcession(true);
+      getApi(page).then((resp) {
+        isDataProcession(false);
+        homeDataModel?.results?.addAll(resp);
+      }, onError: (err) {
+        isDataProcession(false);
+        Helper.customSnakbar("Error", err.toString());
+      });
+    } catch (exception) {
+      isDataProcession(false);
+      Helper.customSnakbar("Exception", exception.toString());
+    }
+  }
+  /* :::::::::::::::::::: Pagination :::::::::::::::::::::: */
+
+  void paginateTask() {
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        print("reached end");
+        page++;
+        //getMoreTask(page);
       }
     });
   }
 
-  generateList() {
-    list = RxList.generate(
-        listLength.toInt(), (index) => Results(gender: (index + 1).toString()));
-  }
+// /* :::::::::::::::::::: Pagination :::::::::::::::::::::: */
+//   RxList<Results> list = <Results>[].obs;
+
+//   RxInt listLength = 15.obs;
+//   RxList results = [].obs;
+
+//   addItems() async {
+//     scrollController.addListener(() {
+//       if (scrollController.position.maxScrollExtent ==
+//           scrollController.position.pixels) {
+//         counter.value++;
+//         print("counter : $counter");
+//         getApi(counter.value);
+//       }
+//     });
+//   }
+
+//   generateList() {
+//     list = RxList.generate(
+//         listLength.toInt(), (index) => Results(gender: (index + 1).toString()));
+//   }
 
   /* :::::::::::::::::::: Pagination Filter :::::::::::::::::::::: */
 
